@@ -91,7 +91,7 @@ class App{
     // 파란색 정육면체 mesh 생성
     _setupModel(){
         // BoxGeometry 정육면체의 형상
-        const geometry = new THREE.﻿TorusKnotGeometry(0.6,0.1,64,10,3,4);
+        const geometry = new THREE.PlaneGeometry(1,2,10,20);
         // 파란색 계열의 재질 생성
         const Material = new THREE.MeshPhongMaterial({color: 0x44a88});
         // 회색 계열의 재질 생성
@@ -143,8 +143,8 @@ class App{
     update(time){
         time *= 0.001;  // 알아보기 쉽게 ms단위를 초단위로 변경
         // // 정육면체 자동 회전 장치
-        // this._cube.rotation.x = time;
-        // this._cube.rotation.y = time;
+         //this._cube.rotation.x = time;
+         //this._cube.rotation.y = time;
     }
 
 }
