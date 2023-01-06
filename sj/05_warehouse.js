@@ -1,5 +1,6 @@
-import * as THREE from "../build/three.module.js";
-
+import * as THREE from '../build/three.module.js';
+// 마우스를 이용해 Object를 회전시키기 위한 코드
+import { OrbitControls } from "../examples/jsm/controls/OrbitControls.js"
 // three.js의 구성
 
 // 1. Renderer : Scene을 모니터에 렌더링(출력)할 수 있는 장치
@@ -41,6 +42,7 @@ class App{
         this._setupCamera();
         this._setupLight();
         this._setupModel();
+        this._setupControls();
 
         // window.onresize : 창 크기 변경시 발동되는 장치
         // renderer와 camera는 창 크기가 변경될 때마다 그 크기에 맞게 속성값을 재설정 해줘야 하기 때문
@@ -55,6 +57,11 @@ class App{
         //                      app클래스의 객체를 가르키기 위해
         requestAnimationFrame(this.render.bind(this));
     }
+    _setupControls(){
+        // OrbitControls : 마우스로 화면을 컨트롤하는 기능
+        // OrbitControls객체 = 카메라 객체 + 마우스 이벤트를 받는 Dom요소
+        new OrbitControls(this._camera, this._divContainer);
+    }
 
     // 위에서 정의하지 않고 호출만 한 메서드 생성
     _setupCamera(){
@@ -68,7 +75,9 @@ class App{
             0.1,
             100
         );
+        camera.rotation.x = 30;
         camera.position.z = 10;
+        
         this._camera = camera;
     }
     _setupLight(){
@@ -78,50 +87,103 @@ class App{
         light.position.set(-1, 2, 4);
         this._scene.add(light);
     }
-    // 태양계 생성
+    // 창고
     _setupModel(){
-        // 도화지 생성
-        const solarSystem = new THREE.Object3D();
-        this._scene.add(solarSystem);
+        // 선반 층 수
+        const floor = 3;
+        // 선반 길이
+        const length = 4;
+        // 재고 (층,위치)
+        const stock_info = {
+            floor : 1,
+            position : 3,
+        }
 
-        // 구 생성
-        const radius = 1;           // 구의 반지름
-        const widthSegments = 12;   // 구의 y축 분할
-        const heightSegments = 12;  // 구의 x축 분할
-        // 구geometry에 태양에 대한 정보 삽입
-        const sphereGeometry = new THREE.SphereGeometry(radius,
-            widthSegments, heightSegments);
-        // 태양의 재질 생성
-        const sunMaterial = new THREE.MeshPhongMaterial({
-            emissive:0xffff00, flatShading:true});
-            // 태양 생성
-            const sunMesh = new THREE.Mesh(sphereGeometry,sunMaterial);
-            // 태양의 크기는 기본 구 크기에 곱하기 3이다
-            sunMesh.scale.set(3,3,3);
-            // 도화지에 태양 생성
-            solarSystem.add(sunMesh);
 
-        const earthOrbit = new THREE.Object3D();
-        solarSystem.add(earthOrbit);
+        const wareHouse = new THREE.Object3D();
+        this._scene.add(wareHouse);
+        const planeGeometry = new THREE.PlaneGeometry(20,40,20,40)
+ 
+        const wareHouseMaterial = new THREE.MeshPhongMaterial({
+            emissive:0x888888, flatShading:true
+        })
+        const group = new THREE.Group();
+        const wareHouseMesh = new THREE.Mesh(planeGeometry,wareHouseMaterial);
+         // 노란색 라인 생성
+         const lineMaterial = new THREE.LineBasicMaterial({color: 0xffff00});
+         const line = new THREE.LineSegments(
+             // WireframeGeometry : 모델의 외각선 표시
+             new THREE.WireframeGeometry(planeGeometry),lineMaterial);
+        group.add(wareHouseMesh);
+        group.add(line);
+        // 판 돌리기
+        group.rotation.x =-Math.PI/2;
+        wareHouse.add(group);
 
-        const earthMaterial = new THREE.MeshPhongMaterial({
-            color : 0x2233ff, emissive: 0x112244, flatShading:true});
-            const earthMesh = new THREE.Mesh(sphereGeometry, earthMaterial);
-            earthOrbit.position.x = 7;
-            earthOrbit.add(earthMesh);
 
-        const moonOrbit = new THREE.Object3D();
-        moonOrbit.position.x = 2;
-        earthOrbit.add(moonOrbit);
+        // 기본 바 생성
+        const shelfBarOrbit = new THREE.Object3D();
+        wareHouse.add(shelfBarOrbit);
+        const shelfBarGeometry = new THREE.CylinderGeometry(0.03,0.03,1.2*floor-1)
+        const shelfBarMaterial = new THREE.MeshPhongMaterial({
+            color : 0xffffff, emissive : 0x112244, flatShading:true
+        })
+        // 기본 판 생성
+        const shelfFloorGeometry = new THREE.BoxGeometry(1.2,0.05,1.2*length)
+        const shelfFloorMaterial = new THREE.MeshPhongMaterial({
+            color : 0xffffff, emissive : 0x112244, flatShading:true
+        })
+        // 기본 재고 생성
+        const stockGeometry = new THREE.BoxGeometry(0.8,0.8,0.8)
+        const sotckMaterial = new THREE.MeshPhongMaterial({
+            color : 0xffffff, emissive : 0x112244, flatShading:true
+        })
 
-        const moonMaterial = new THREE.MeshPhongMaterial({
-            color:0x888888, emissive: 0x222222,flatShading:true});
-            const moonMesh = new THREE.Mesh(sphereGeometry,moonMaterial);
-            moonMesh.scale.set(0.5,0.5,0.5);
-            moonOrbit.add(moonMesh)
+        for(let i=0;i<4;i++){
+            // 바생성
+            const shelfBarMesh =new THREE.Mesh(shelfBarGeometry,shelfBarMaterial);
+            let x = 1;
+            let z = 1;
+            if(i==1){
+                z=-1;
+            }else if(i==2){
+                x=-1;
+                z=-1;
+            }else if(i==3){
+                x=-1;
+            }
+            shelfBarMesh.position.x = 0.6*x;
+            shelfBarMesh.position.y = 0.6*(floor-1);
+            shelfBarMesh.position.z = 0.6*z*length;
+            shelfBarOrbit.add(shelfBarMesh);
+        }
+        for(let i=0;i<floor;i++){
+            // 판 생성
+            const shelfFloorMesh = new THREE.Mesh(shelfFloorGeometry,shelfFloorMaterial)
+            shelfFloorMesh.position.y = 0.025+(i*1);
+            shelfBarOrbit.add(shelfFloorMesh);
+        }
+
+        // 재고 생성
+        const stockMesh = new THREE.Mesh(stockGeometry,sotckMaterial)
+        stockMesh.position.y = -0.6+(stock_info.floor*1);
+        stockMesh.position.z = (1.2*length)/2-(0.4)-(stock_info.position*1.30);
+        shelfBarOrbit.add(stockMesh)
+
         
-            this._solarSystem = solarSystem
-            this._earthOrbit = earthOrbit
+
+        // const moonOrbit = new THREE.Object3D();
+        // moonOrbit.position.x = 2;
+        // earthOrbit.add(moonOrbit);
+
+        // const moonMaterial = new THREE.MeshPhongMaterial({
+        //     color:0x888888, emissive: 0x222222,flatShading:true});
+        //     const moonMesh = new THREE.Mesh(sphereGeometry,moonMaterial);
+        //     moonMesh.scale.set(0.5,0.5,0.5);
+        //     moonOrbit.add(moonMesh)
+        
+        //     this._solarSystem = solarSystem
+        //     this._earthOrbit = earthOrbit
     }
 
     // 창의 크기가 변경될때 발생하는 이벤트
@@ -151,8 +213,8 @@ class App{
         // this._cube.rotation.x = time;
         // this._cube.rotation.y = time;
 
-        this._solarSystem.rotation.y = time/2;
-        this._earthOrbit.rotation.y = time;
+        // this._solarSystem.rotation.y = time/2;
+        // this._earthOrbit.rotation.y = time;
     }
 
 }

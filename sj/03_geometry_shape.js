@@ -60,11 +60,13 @@ class App{
     }
 
     // 위에서 정의하지 않고 호출만 한 메서드 생성
+    
     _setupControls(){
         // OrbitControls : 마우스로 화면을 컨트롤하는 기능
         // OrbitControls객체 = 카메라 객체 + 마우스 이벤트를 받는 Dom요소
         new OrbitControls(this._camera, this._divContainer);
     }
+
     // 카메라
     _setupCamera(){
         // three.js가 3차원 그래픽을 출력할 영역의 가로, 세로 크기를 가져오기
