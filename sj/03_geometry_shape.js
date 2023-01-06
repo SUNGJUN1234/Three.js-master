@@ -295,23 +295,22 @@ class App{
                     // 2D 하트모양 만들기
                     const shape = new THREE.Shape();
                     const x = -2.5, y = -5;
-                    shape.moveTo(x+2.5,y+2.5);
-                    shape.bezierCurveTo(x+2.5,y+2.5,x+2,y,x,y);
-                    shape.bezierCurveTo(x-3,y,x-3,y+3.5,x-3,y+3.5);
-                    shape.bezierCurveTo(x-3,y+5.5,x-1.5,y+7.7,x+2.5,y+9.5);
-                    shape.bezierCurveTo(x+6,y+7.7,x+8,y+4.5,x+8,y+3.5);
-                    shape.bezierCurveTo(x+8,y+3.5,x+8,y,x+5,y);
-                    shape.bezierCurveTo(x+3.5,y,x+2.5,y+2.5,x+2.5,y+2.5);
-
+                    shape.moveTo(x+2.5,-(y+2.5));
+                    shape.bezierCurveTo(x+2.5,-(y+2.5),x+2,-y,x,-y);
+                    shape.bezierCurveTo(x-3,-y,x-3,-(y+3.5),x-3,-(y+3.5));
+                    shape.bezierCurveTo(x-3,-(y+5.5),x-1.5,-(y+7.7),x+2.5,-(y+9.5));
+                    shape.bezierCurveTo(x+6,-(y+7.7),x+8,-(y+4.5),x+8,-(y+3.5));
+                    shape.bezierCurveTo(x+8,-(y+3.5),x+8,-y,x+5,-y);
+                    shape.bezierCurveTo(x+3.5,-y,x+2.5,-(y+2.5),x+2.5,-(y+2.5));
                     
                     // extrude를 생성하기 위한 세팅값
                     const settings = {
                         steps: 1,   // 깊이 방향으로의 분할 수
                         depth: 0.1,   // 깊이 값
                         bevelEnabled: true,    // 베벨링 처리를 할것인지?
-                        bevelThickness: 2,   // 베벨링 두께
-                        bevelSize: 2,        // shape의 기본값으로 얼마나 베벨링 할지?
-                        bevelSegments: 10,   // 베벨링을 얼마나 부드럽게?
+                        bevelThickness: 1,   // 베벨링 두께
+                        bevelSize: 1,        // shape의 기본값으로 얼마나 베벨링 할지?
+                        bevelSegments: 1,   // 베벨링을 얼마나 부드럽게?
                     }
 
                     const geometry = new THREE.ExtrudeGeometry(shape, settings);
@@ -331,7 +330,7 @@ class App{
                 const group = new THREE.Group();
                 // 그룹안에 정육면체와 라인 넣기
                 group.add(cube);
-                group.add(line);
+                // group.add(line);
 
                 // scene객체의 구성요소로 cube추가
                 this._scene.add(group)
