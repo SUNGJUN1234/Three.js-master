@@ -87,16 +87,19 @@ class App{
         light.position.set(-1, 2, 4);
         this._scene.add(light);
     }
+
+
     // 창고
     _setupModel(){
         // 선반 층 수
-        const floor = 3;
+        const floor = 4;
         // 선반 길이
-        const length = 4;
+        const length = 3;
         // 재고 (층,위치)
         const stock_info = {
-            floor : 1,
-            position : 3,
+            size : 0.8,
+            floor : 3,
+            position : 2,
         }
 
 
@@ -134,7 +137,7 @@ class App{
             color : 0xffffff, emissive : 0x112244, flatShading:true
         })
         // 기본 재고 생성
-        const stockGeometry = new THREE.BoxGeometry(0.8,0.8,0.8)
+        const stockGeometry = new THREE.BoxGeometry(stock_info.size,stock_info.size,stock_info.size)
         const sotckMaterial = new THREE.MeshPhongMaterial({
             color : 0xffffff, emissive : 0x112244, flatShading:true
         })
@@ -167,10 +170,12 @@ class App{
         // 재고 생성
         const stockMesh = new THREE.Mesh(stockGeometry,sotckMaterial)
         stockMesh.position.y = -0.6+(stock_info.floor*1);
-        stockMesh.position.z = (1.2*length)/2-(0.4)-(stock_info.position*1.30);
+        // stockMesh.position.z = (1.2*length)/2-(0.4)-(stock_info.position*1.30);
+        stockMesh.position.z = (0.6*length)-(0.6)-(1.2*stock_info.position)
         shelfBarOrbit.add(stockMesh)
 
         
+
 
         // const moonOrbit = new THREE.Object3D();
         // moonOrbit.position.x = 2;
@@ -216,6 +221,7 @@ class App{
         // this._solarSystem.rotation.y = time/2;
         // this._earthOrbit.rotation.y = time;
     }
+
 
 }
 
