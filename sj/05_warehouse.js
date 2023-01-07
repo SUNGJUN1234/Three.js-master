@@ -1,6 +1,8 @@
 import * as THREE from '../build/three.module.js';
 // 마우스를 이용해 Object를 회전시키기 위한 코드
 import { OrbitControls } from "../examples/jsm/controls/OrbitControls.js"
+
+import {GLTFLoader} from "../examples/jsm/loaders/GLTFLoader.js"
 // three.js의 구성
 
 // 1. Renderer : Scene을 모니터에 렌더링(출력)할 수 있는 장치
@@ -35,6 +37,8 @@ class App{
 
         // scene객체 생성
         const scene = new THREE.Scene();
+        // 배경 색상 설정
+        scene.background = new THREE.Color(0.7,0.7,0.7)
         // 다른 메서드에서 참조할 수 있도록 field로 정의
         this._scene = scene;
 
@@ -94,12 +98,12 @@ class App{
         // 선반 층 수
         const floor = 4;
         // 선반 길이
-        const length = 3;
+        const length = 2;
         // 재고 (층,위치)
         const stock_info = {
             size : 0.8,
-            floor : 3,
-            position : 2,
+            floor : 4,
+            position : 1,
         }
 
 
@@ -189,8 +193,13 @@ class App{
         
         //     this._solarSystem = solarSystem
         //     this._earthOrbit = earthOrbit
-    }
 
+
+
+        
+        
+    }
+    
     // 창의 크기가 변경될때 발생하는 이벤트
     resize(){
         // 위에서 divContainer로 정의한(#webgl-container div) div의 크기 얻어오기
