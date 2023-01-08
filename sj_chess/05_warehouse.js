@@ -47,6 +47,7 @@ class App{
         this._setupLight();
         this._setupModel();
         this._setupControls();
+        this._setupEvents();
 
         // window.onresize : 창 크기 변경시 발동되는 장치
         // renderer와 camera는 창 크기가 변경될 때마다 그 크기에 맞게 속성값을 재설정 해줘야 하기 때문
@@ -65,6 +66,66 @@ class App{
         // OrbitControls : 마우스로 화면을 컨트롤하는 기능
         // OrbitControls객체 = 카메라 객체 + 마우스 이벤트를 받는 Dom요소
         new OrbitControls(this._camera, this._divContainer);
+    }
+    _setupEvents(){
+        // 마우스 이동기능
+        const mouse = new THREE.Vector2();
+        const intersectionPoint = new THREE.Vector3();
+        const planeNormal = new THREE.Vector3();
+        const plane = new THREE.Plane();
+        // const raycaster = new THREE.Raycaster();
+
+        // 마우스 클릭으로 재고 컨트롤하는 기능
+        this._raycaster = new THREE.Raycaster();
+        // 어느 좌표를 클릭했는지 알아내는 기능
+        this._raycaster._clickedPosition = new THREE.Vector3();
+        
+        
+        window.addEventListener('mousemove',function(e){
+            mouse.x = (e.clientX / window.innerWidth)*2-1;
+            mouse.y = (e.clientY / window.innerHeight)*2-1;
+            planeNormal.copy(this._camera.position).normalize();
+            plane.setFormNormalAndCoplanarPoint(planeNormal, this._scene.position);
+            this._raycaster.setFromCamera(mouse, this._camera);
+            this._raycaster.ray.intersectPlane(plane,intersectionPoint);
+        })
+        
+        
+        
+        // 클릭해서 선택된 매쉬객체에 대한 참조 기능
+        this._raycaster._selectedMesh = null;
+
+        window.addEventListener("click",(event)=>{
+            this._raycaster._clickedPosition.x = (event.clientX / window.innerWidth)*2-1;
+            this._raycaster._clickedPosition.y = (event.clientY / window.innerHeight)*2-1;
+            this._raycaster.setFromCamera(this._raycaster._clickedPosition,this._camera);
+            // 실제 클릭된 매쉬를 얻는 기능
+            const found = this._raycaster.intersectObjects(this._scene.children);
+
+            if(found.length>0){
+                for(let i=0;i<found.length;i++){
+                    if(found[i].object.name!=""){
+                        
+                        console.log(found[i])
+                        const clickedObj = found[i].object;
+                        // 해당재고의 이름 가져오기
+                        console.log(clickedObj.name);
+                    }
+                }
+            }
+        })
+
+
+
+        // 반응형 웹
+        window.onresize = this.resize.bind(this);
+        this.resize();
+
+        this._clock = new THREE.Clock();
+        requestAnimationFrame(this.render.bind(this));
+
+
+        
     }
 
     // 위에서 정의하지 않고 호출만 한 메서드 생성
@@ -149,9 +210,10 @@ this._createBoard();
 
 // 선반 생성
 _createShelfs(x,y){
-    this._createShelf({x,y},"A선반",{x:-5,y:0},{width : 1,length :2,floor :4},true);
-    this._createShelf({x,y},"B선반",{x:5,y:5},{width : 1,length :2,floor :4},false);
-    this._createShelf({x,y},"C선반",{x:7,y:5},{width : 1,length :2,floor :4},true);
+    this._createShelf({x,y},"A선반",{x:-7,y:0},{width : 1,length :5,floor :4},true);
+    this._createShelf({x,y},"B선반",{x:7,y:0},{width : 1,length :5,floor :4},true);
+    this._createShelf({x,y},"C선반",{x:7,y:-18},{width : 1,length :5,floor :4},true);
+    this._createShelf({x,y},"D선반",{x:-7,y:-18},{width : 1,length :5,floor :4},true)
 }
 _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
 
@@ -205,15 +267,6 @@ _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
         this._shelf = group2;
         this._scene.add(group2)
     
-            // const mesh = this._shelf.clone();
-            // mesh.name = meshName;
-    
-            // const posRC = this._getBoardPosition(boardPos.row,boardPos.col);
-            // const pos = {x:posRC.x,y:0.3,z:posRC.y};
-            // // mesh.position.set(pos.x,pos.y,pos.z)
-            // this._scene.add(mesh);
-    
-    
     
             this._createStocks(meshName,boardPos.x,boardPos.y);
 
@@ -221,8 +274,6 @@ _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
     }else{
         alert(meshName+"이 창고의 크기를 넘었습니다")
     }
-
-
     
 }
 
@@ -245,19 +296,13 @@ _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
         const stockMesh = new THREE.Mesh(stockGeometry,sotckMaterial)
         stockMesh.position.y = -0.6+(stock_info.floor*1);
         stockMesh.position.z = (0.6*length)-(0.6)-(1.2*(stock_info.position-1))
-            
+        stockMesh.name = meshName
+
         this._stock = stockMesh;
 
         this._shelf.add(stockMesh)
     }
     
-//
-                // const mesh = this._stock.clone();
-                // mesh.name = meshName;
-                // const posRC = this._getShelfPosition("A선반",stock_info.position,stock_info.floor);
-                // const pos = {z:posRC.x,y:-0.6+(stock_info.floor*1),x:(0.6*length)-(0.6)-(1.2*(stock_info.position-1))};
-                // mesh.position.set(pos.x,pos.y,pos.z)
-                // this._scene.add(mesh);
 }
 // 창고의 크기 얻기
 _getBoardPosition(row,col){
