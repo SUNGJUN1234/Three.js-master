@@ -105,8 +105,8 @@ class App{
                 //     this._createBoard();
                 // })
 this._createBoard();
-this._createShelfs();
-this._createStocks();
+
+
     }
 
 
@@ -115,8 +115,10 @@ this._createStocks();
 
 // 창고 생성
  _createBoard(){
+    const watehouse_x = 20;
+    const watehouse_y = 40;
     const wareHouse = new THREE.Object3D();
-    const planeGeometry = new THREE.PlaneGeometry(20,40,20,40)
+    const planeGeometry = new THREE.PlaneGeometry(watehouse_x,watehouse_y,watehouse_x/2,watehouse_y/2)
 
     const wareHouseMaterial = new THREE.MeshPhongMaterial({
         emissive:0x888888, flatShading:true
@@ -124,7 +126,7 @@ this._createStocks();
     const group1 = new THREE.Group();
     const wareHouseMesh = new THREE.Mesh(planeGeometry,wareHouseMaterial);
      // 노란색 라인 생성
-    const lineMaterial = new THREE.LineBasicMaterial({color: 0xffff00});
+    const lineMaterial = new THREE.LineBasicMaterial({color: 0xa0a0a0});
     const line = new THREE.LineSegments(
      // WireframeGeometry : 모델의 외각선 표시
      new THREE.WireframeGeometry(planeGeometry),lineMaterial);
@@ -139,65 +141,89 @@ this._createStocks();
     this._scene.add(mesh);
 
     this._warehouse = wareHouse
+    this._createShelfs(watehouse_x,watehouse_y);
 }
 
 
 
 
 // 선반 생성
-_createShelfs(){
-    this._createShelf("A선반",{row:-5,col:0},{width : 1,length :2,floor :4},true);
-    this._createShelf("B선반",{row:5,col:5},{width : 1,length :2,floor :4},true);
+_createShelfs(x,y){
+    this._createShelf({x,y},"A선반",{x:-5,y:0},{width : 1,length :2,floor :4},true);
+    this._createShelf({x,y},"B선반",{x:5,y:5},{width : 1,length :2,floor :4},false);
+    this._createShelf({x,y},"C선반",{x:7,y:5},{width : 1,length :2,floor :4},true);
 }
-_createShelf(meshName,boardPos,shelf_info,rotation){
-    const group2 = new THREE.Group();
-    // 기본 바 생성
-    const shelfBarGeometry = new THREE.CylinderGeometry(0.03,0.03,shelf_info.width*shelf_info.floor-1+0.2)
-    const shelfBarMaterial = new THREE.MeshPhongMaterial({
-        color : 0xffffff, emissive : 0x112244, flatShading:true
-    })
-    // 기본 판 생성
-    const shelfFloorGeometry = new THREE.BoxGeometry(shelf_info.width,0.05,shelf_info.width*shelf_info.length)
-    const shelfFloorMaterial = new THREE.MeshPhongMaterial({
-        color : 0xffffff, emissive : 0x112244, flatShading:true
-    })
-    for(let i=0;i<4;i++){
-        // 바생성
-        const shelfBarMesh =new THREE.Mesh(shelfBarGeometry,shelfBarMaterial);
-        let x = 1;
-        let z = 1;
-        if(i==1){
-            z=-1;
-        }else if(i==2){
-            x=-1;
-            z=-1;
-        }else if(i==3){
-            x=-1;
+_createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
+
+    // 선반이 창고를 넘어가지 않게하는 장치
+    if(((warehouse_info.x/2>(Math.abs(boardPos.x)+shelf_info.length/2)&&rotation==true )
+    ||(warehouse_info.x/2>(Math.abs(boardPos.x)+shelf_info.width/2)&&rotation==false ))
+    &&
+    ((warehouse_info.y/2>(Math.abs(boardPos.y)+shelf_info.width/2)&&rotation==true )
+    ||(warehouse_info.y/2>(Math.abs(boardPos.y)+shelf_info.length/2)&&rotation==false )) ){
+        const group2 = new THREE.Group();
+        // 기본 바 생성
+        const shelfBarGeometry = new THREE.CylinderGeometry(0.03,0.03,shelf_info.width*shelf_info.floor-1+0.2)
+        const shelfBarMaterial = new THREE.MeshPhongMaterial({
+            color : 0xffffff, emissive : 0x112244, flatShading:true
+        })
+        // 기본 판 생성
+        const shelfFloorGeometry = new THREE.BoxGeometry(shelf_info.width,0.05,shelf_info.width*shelf_info.length)
+        const shelfFloorMaterial = new THREE.MeshPhongMaterial({
+            color : 0xffffff, emissive : 0x112244, flatShading:true
+        })
+        for(let i=0;i<4;i++){
+            // 바생성
+            const shelfBarMesh =new THREE.Mesh(shelfBarGeometry,shelfBarMaterial);
+            let x = 1;
+            let z = 1;
+            if(i==1){
+                z=-1;
+            }else if(i==2){
+                x=-1;
+                z=-1;
+            }else if(i==3){
+                x=-1;
+            }
+            shelfBarMesh.position.x = shelf_info.width/2*x;
+            shelfBarMesh.position.y = shelf_info.width/2*(shelf_info.floor-2)+(0.6);
+            shelfBarMesh.position.z = shelf_info.width/2*z*shelf_info.length;
+            group2.add(shelfBarMesh);
         }
-        shelfBarMesh.position.x = shelf_info.width/2*x;
-        shelfBarMesh.position.y = shelf_info.width/2*(shelf_info.floor-2)+(0.3);
-        shelfBarMesh.position.z = shelf_info.width/2*z*shelf_info.length;
-        group2.add(shelfBarMesh);
-    }
-    for(let i=0;i<shelf_info.floor;i++){
-        // 판 생성
-        const shelfFloorMesh = new THREE.Mesh(shelfFloorGeometry,shelfFloorMaterial)
-        shelfFloorMesh.position.y = (i*1)-0.25;
-        group2.add(shelfFloorMesh);
+        for(let i=0;i<shelf_info.floor;i++){
+            // 판 생성
+            const shelfFloorMesh = new THREE.Mesh(shelfFloorGeometry,shelfFloorMaterial)
+            shelfFloorMesh.position.y = (i*1)+0.1;
+            group2.add(shelfFloorMesh);
+        }
+    
+        if(rotation==true){
+            group2.rotation.y =-Math.PI/2;
+        }
+        group2.position.set(boardPos.x,0,boardPos.y)
+        group2.name = meshName;
+        this._shelf = group2;
+        this._scene.add(group2)
+    
+            // const mesh = this._shelf.clone();
+            // mesh.name = meshName;
+    
+            // const posRC = this._getBoardPosition(boardPos.row,boardPos.col);
+            // const pos = {x:posRC.x,y:0.3,z:posRC.y};
+            // // mesh.position.set(pos.x,pos.y,pos.z)
+            // this._scene.add(mesh);
+    
+    
+    
+            this._createStocks();
+
+
+    }else{
+        console.log("선반이 창고의 크기를 넘었습니다")
     }
 
-    if(rotation==true){
-        group2.rotation.y =-Math.PI/2;
-    }
-    this._shelf = group2;
 
-        const mesh = this._shelf.clone();
-        mesh.name = meshName;
-
-        const posRC = this._getBoardPosition(boardPos.row,boardPos.col);
-        const pos = {x:posRC.x,y:0.3,z:posRC.y};
-        mesh.position.set(pos.x,pos.y,pos.z)
-        this._scene.add(mesh);
+    
 }
 
 
@@ -246,10 +272,13 @@ _getBoardPosition(row,col){
 }
 // 선반 크기와 좌표 얻기
 _getShelfPosition(name,length,floor){
+    // 위에서 만든 선반 가져오기
     const shelf = this._shelf
     const box = new THREE.Box3().setFromObject(shelf);
     const floor_size = box.max.y - box.min.y;
     const floor_cellWidth = floor_size /10;
+
+    console.log(shelf)
 
     const length_size = box.max.z - box.min.z;
     const length_cellWidth = length_size /10;
