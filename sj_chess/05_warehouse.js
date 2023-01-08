@@ -215,11 +215,11 @@ _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
     
     
     
-            this._createStocks();
+            this._createStocks(meshName,boardPos.x,boardPos.y);
 
 
     }else{
-        console.log("선반이 창고의 크기를 넘었습니다")
+        alert(meshName+"이 창고의 크기를 넘었습니다")
     }
 
 
@@ -228,36 +228,36 @@ _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
 
 
 // 재고 생성
- _createStocks(){
-    this._createStock({size : 0.7,floor : 3,position : 3,},"코카콜라(500ml)");
-    this._createStock({size : 0.7,floor : 4,position : 1,},"델몬트 오렌지(1.5L)");
+ _createStocks(shelf_name,x,y){
+    this._createStock({shelf_name,x,y},{shelf_name:"A선반",size : 0.7,floor : 3,position : 0,},"코카콜라(500ml)");
+    this._createStock({shelf_name,x,y},{shelf_name:"B선반",size : 0.7,floor : 4,position : 1,},"델몬트 오렌지(1.5L)");
 }
- _createStock(stock_info,meshName){
+ _createStock(shelf_info,stock_info,meshName){
 
+    if(shelf_info.shelf_name == stock_info.shelf_name){
+        // 기본 재고 생성
+        const stockGeometry = new THREE.BoxGeometry(stock_info.size,stock_info.size,stock_info.size)
+        const sotckMaterial = new THREE.MeshPhongMaterial({
+            color : 0xffffff, emissive : 0x112244, flatShading:true
+        })
+            
+        // 재고 생성
+        const stockMesh = new THREE.Mesh(stockGeometry,sotckMaterial)
+        stockMesh.position.y = -0.6+(stock_info.floor*1);
+        stockMesh.position.z = (0.6*length)-(0.6)-(1.2*(stock_info.position-1))
+            
+        this._stock = stockMesh;
 
-    // 기본 재고 생성
-    const stockGeometry = new THREE.BoxGeometry(stock_info.size,stock_info.size,stock_info.size)
-    const sotckMaterial = new THREE.MeshPhongMaterial({
-        color : 0xffffff, emissive : 0x112244, flatShading:true
-    })
-        
-    // 재고 생성
-    const stockMesh = new THREE.Mesh(stockGeometry,sotckMaterial)
-    // stockMesh.position.y = -0.6+(stock_info.floor*1);
-    // stockMesh.position.z = (0.6*length)-(0.6)-(1.2*(stock_info.position-1))
-    // shelfBarOrbit.add(stockMesh)
-        
-    this._stock = stockMesh;
-
-
+        this._shelf.add(stockMesh)
+    }
+    
 //
-    const mesh = this._stock.clone();
-    mesh.name = meshName;
-
-    const posRC = this._getShelfPosition("A선반",stock_info.position,stock_info.floor);
-    const pos = {z:posRC.x,y:-0.6+(stock_info.floor*1),x:(0.6*length)-(0.6)-(1.2*(stock_info.position-1))};
-    mesh.position.set(pos.x,pos.y,pos.z)
-    this._scene.add(mesh);
+                // const mesh = this._stock.clone();
+                // mesh.name = meshName;
+                // const posRC = this._getShelfPosition("A선반",stock_info.position,stock_info.floor);
+                // const pos = {z:posRC.x,y:-0.6+(stock_info.floor*1),x:(0.6*length)-(0.6)-(1.2*(stock_info.position-1))};
+                // mesh.position.set(pos.x,pos.y,pos.z)
+                // this._scene.add(mesh);
 }
 // 창고의 크기 얻기
 _getBoardPosition(row,col){
