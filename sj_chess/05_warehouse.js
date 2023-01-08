@@ -68,53 +68,29 @@ class App{
         new OrbitControls(this._camera, this._divContainer);
     }
     _setupEvents(){
-        // 마우스 이동기능
-        const mouse = new THREE.Vector2();
-        const intersectionPoint = new THREE.Vector3();
-        const planeNormal = new THREE.Vector3();
-        const plane = new THREE.Plane();
-        // const raycaster = new THREE.Raycaster();
-
-        // 마우스 클릭으로 재고 컨트롤하는 기능
+        
         this._raycaster = new THREE.Raycaster();
-        // 어느 좌표를 클릭했는지 알아내는 기능
-        this._raycaster._clickedPosition = new THREE.Vector3();
-        
-        
-        window.addEventListener('mousemove',function(e){
-            mouse.x = (e.clientX / window.innerWidth)*2-1;
-            mouse.y = (e.clientY / window.innerHeight)*2-1;
-            planeNormal.copy(this._camera.position).normalize();
-            plane.setFormNormalAndCoplanarPoint(planeNormal, this._scene.position);
-            this._raycaster.setFromCamera(mouse, this._camera);
-            this._raycaster.ray.intersectPlane(plane,intersectionPoint);
-        })
-        
-        
-        
-        // 클릭해서 선택된 매쉬객체에 대한 참조 기능
+        // _clickedPosition : 마우스로 클릭된 scene의 좌표를 참조
+        this._raycaster._clickedPosition = new THREE.Vector2();
+        // 클릭해서 선택된 매쉬 객체에 대한 참조
         this._raycaster._selectedMesh = null;
 
+        // 클릭이벤트
         window.addEventListener("click",(event)=>{
             this._raycaster._clickedPosition.x = (event.clientX / window.innerWidth)*2-1;
-            this._raycaster._clickedPosition.y = (event.clientY / window.innerHeight)*2-1;
-            this._raycaster.setFromCamera(this._raycaster._clickedPosition,this._camera);
-            // 실제 클릭된 매쉬를 얻는 기능
+            this._raycaster._clickedPosition.y = -(event.clientY / window.innerHeight)*2+1;
+            this._raycaster.setFromCamera(this._raycaster._clickedPosition, this._camera);
+            
+            // 실제 클릭된 mesh를 얻는 코드
             const found = this._raycaster.intersectObjects(this._scene.children);
-
-            if(found.length>0){
-                for(let i=0;i<found.length;i++){
-                    if(found[i].object.name!=""){
-                        
-                        console.log(found[i])
-                        const clickedObj = found[i].object;
-                        // 해당재고의 이름 가져오기
-                        console.log(clickedObj.name);
-                    }
+            if(found.length > 0){
+                
+                const clickedObj = found[0].object;
+                if(clickedObj.name!=""){
+                    console.log(clickedObj.name);
                 }
             }
         })
-
 
 
         // 반응형 웹
