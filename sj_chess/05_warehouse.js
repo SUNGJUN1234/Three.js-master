@@ -186,10 +186,10 @@ this._createBoard();
 
 // 선반 생성
 _createShelfs(x,y){
-    this._createShelf({x,y},"A선반",{x:-7,y:0},{width : 1,length :4,floor :4},true);
-    this._createShelf({x,y},"B선반",{x:7,y:0},{width : 1,length :4,floor :4},true);
-    this._createShelf({x,y},"C선반",{x:7,y:-18},{width : 1,length :4,floor :4},true);
-    this._createShelf({x,y},"D선반",{x:-7,y:-18},{width : 1,length :4,floor :4},true)
+    this._createShelf({x,y},"A선반",{x:-6,y:0},{width : 1,length :7,floor :4},true);
+    this._createShelf({x,y},"B선반",{x:6,y:0},{width : 1,length :7,floor :4},true);
+    this._createShelf({x,y},"C선반",{x:6,y:-18},{width : 1,length :7,floor :4},true);
+    this._createShelf({x,y},"D선반",{x:-6,y:-18},{width : 1,length :7,floor :4},true);
 }
 _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
 
@@ -258,20 +258,21 @@ _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
  _createStocks(shelf_name,x,y,width,length){
     this._createStock({shelf_name,x,y,width,length},{shelf_name:"A선반",size : 0.7,floor : 3,position : 0,},"코카콜라(500ml)");
     this._createStock({shelf_name,x,y,width,length},{shelf_name:"B선반",size : 0.7,floor : 4,position : 1,},"델몬트 오렌지(1.5L)");
+    this._createStock({shelf_name,x,y,width,length},{shelf_name:"C선반",size : 0.7,floor : 1,position : 2,},"사이다(500ml)");
 }
  _createStock(shelf_info,stock_info,meshName){
 
     if(shelf_info.shelf_name == stock_info.shelf_name){
         // 기본 재고 생성
         const stockGeometry = new THREE.BoxGeometry(stock_info.size,stock_info.size,stock_info.size)
-        const sotckMaterial = new THREE.MeshPhongMaterial({
+        const stockMaterial = new THREE.MeshPhongMaterial({
             color : 0xffffff, emissive : 0x112244, flatShading:true
         })
             
         // 재고 생성
-        const stockMesh = new THREE.Mesh(stockGeometry,sotckMaterial)
+        const stockMesh = new THREE.Mesh(stockGeometry,stockMaterial)
         stockMesh.position.y = -0.5+(stock_info.floor*1);
-        stockMesh.position.z = (0.5*shelf_info.y)-(0.5)-(1*(stock_info.position-shelf_info.length/2))
+        stockMesh.position.z = (stock_info.position-shelf_info.length/2)+0.5;
         stockMesh.name = meshName
 
         this._stock = stockMesh;
