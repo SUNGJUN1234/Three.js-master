@@ -180,7 +180,7 @@ class App{
             0.1,
             100
         );
-        camera.rotation.x = 30;
+        // camera.rotation.x = 30;
         camera.position.z = 10;
         
         this._camera = camera;
