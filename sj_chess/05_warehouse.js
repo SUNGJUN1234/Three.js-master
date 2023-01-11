@@ -254,6 +254,8 @@ _createShelfs(x,y){
     this._createShelf({x,y},"B선반",{x:6,y:0},{width : 1,length :7,floor :4},false);
     this._createShelf({x,y},"C선반",{x:6,y:-12},{width : 1,length :7,floor :4},false);
     this._createShelf({x,y},"D선반",{x:-6,y:-12},{width : 1,length :7,floor :4},false);
+    this._createShelf({x,y},"E선반",{x:6,y:12},{width : 1,length :7,floor :4},false);
+    this._createShelf({x,y},"F선반",{x:-6,y:12},{width : 1,length :7,floor :4},false);
    }
 _createShelf(warehouse_info,meshName,boardPos,shelf_info,rotation){
 
