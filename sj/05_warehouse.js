@@ -96,7 +96,7 @@ class App{
     // 창고
     _setupModel(){
         // 선반 층 수
-        const floor = 4;
+        const floor = 10;
         // 선반 길이
         const length = 2;
         // 재고 (층,위치)
@@ -131,7 +131,7 @@ class App{
         // 기본 바 생성
         const shelfBarOrbit = new THREE.Object3D();
         wareHouse.add(shelfBarOrbit);
-        const shelfBarGeometry = new THREE.CylinderGeometry(0.03,0.03,1.2*floor-1)
+        const shelfBarGeometry = new THREE.CylinderGeometry(0.03,0.03,1*floor-0.8)
         const shelfBarMaterial = new THREE.MeshPhongMaterial({
             color : 0xffffff, emissive : 0x112244, flatShading:true
         })
@@ -160,7 +160,7 @@ class App{
                 x=-1;
             }
             shelfBarMesh.position.x = 0.6*x;
-            shelfBarMesh.position.y = 0.6*(floor-1);
+            shelfBarMesh.position.y = 0.5*(floor-1)+0.1;
             shelfBarMesh.position.z = 0.6*z*length;
             shelfBarOrbit.add(shelfBarMesh);
         }
