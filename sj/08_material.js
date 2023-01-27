@@ -1,4 +1,5 @@
 import * as THREE from "../build/three.module.js";
+import {OrbitControls} from "../examples/jsm/controls/OrbitControls.js"
 
 // three.js의 구성
 
@@ -41,6 +42,7 @@ class App{
         this._setupCamera();
         this._setupLight();
         this._setupModel();
+        this._setupControls();
 
         // window.onresize : 창 크기 변경시 발동되는 장치
         // renderer와 camera는 창 크기가 변경될 때마다 그 크기에 맞게 속성값을 재설정 해줘야 하기 때문
@@ -55,6 +57,9 @@ class App{
         //                      app클래스의 객체를 가르키기 위해
         requestAnimationFrame(this.render.bind(this));
     }
+    _setupControls(){
+        new OrbitControls(this._camera,this._divContainer)
+    }
 
     // 위에서 정의하지 않고 호출만 한 메서드 생성
     _setupCamera(){
@@ -68,7 +73,7 @@ class App{
             0.1,
             100
         );
-        camera.position.z = 2;
+        camera.position.z = 7;
         this._camera = camera;
     }
     _setupLight(){
@@ -94,10 +99,16 @@ class App{
             "position",
             new THREE.Float32BufferAttribute(vertices,3)
         )
+            const sprite = new THREE.TextureLoader().load(
+                "../examples/textures/sprites/disc.png"
+            )
+
         const material = new THREE.PointsMaterial({
-            color : 0xff0000,
-            size : 5,
-            sizeAttenuation : false
+            map : sprite,
+            alphaTest : 0.5,
+            color : 0xffff00,
+            size : 0.1,
+            sizeAttenuation : true
         })
 
         const points = new THREE.Points(geometry,material);
@@ -131,8 +142,6 @@ class App{
     // render에서 전달받은 time을 사용하여 애니메이션 효과를 만드는 장치
     update(time){
         time *= 0.001;  // 알아보기 쉽게 ms단위를 초단위로 변경
-        this._cube.rotation.x = time;
-        this._cube.rotation.y = time;
     }
 
 }
