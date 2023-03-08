@@ -32,6 +32,15 @@ class App{
         // renderer의 domElement를 id가 webgl-container인 div의 자식으로 추가
         divContainer.appendChild(renderer.domElement);
         // 다른 메서드에서 참조할 수 있도록 field로 정의
+
+
+
+
+
+
+
+
+
         this._renderer = renderer; // 이 renderer는 canvas타입의 dom 객체
 
         // scene객체 생성
@@ -44,6 +53,7 @@ class App{
         this._setupLight();
         this._setupModel();
         this._setupControls();
+        // this._setupEvents();
 
         // window.onresize : 창 크기 변경시 발동되는 장치
         // renderer와 camera는 창 크기가 변경될 때마다 그 크기에 맞게 속성값을 재설정 해줘야 하기 때문
@@ -57,7 +67,53 @@ class App{
         // bind를 사용한 이유 : render메서드의 코드안에서 사용되는 this가 바로 이
         //                      app클래스의 객체를 가르키기 위해
         requestAnimationFrame(this.render.bind(this));
+
     }
+
+    _setupEvents(){
+
+        this._raycaster = new THREE.Raycaster();
+        this._raycaster._clickedPosition = new THREE.Vector2();
+        this._raycaster._selectedMesh = null;
+
+        this._pickedObject = this._raycaster._selectedMesh
+
+        this._renderer.domElement.addEventListener('mousedown', this._onMouseDown, false);
+        this._renderer.domElement.addEventListener('mouseup', this._onMouseUp, false);
+        this._renderer.domElement.addEventListener('mousemove', this._onMouseMove, false);
+    }
+
+    _onMouseDown(event) {
+
+        event.preventDefault();
+        this._raycaster._clickedPosition.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this._raycaster._clickedPosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        this._raycaster.setFromCamera(this._raycaster._clickedPosition, this._camera);
+        const intersects =  this._raycaster.intersectObjects(this._scene, true);
+        if (intersects.length > 0) {
+            this._pickedObject = intersects[0].object;
+          const intersects =  this._raycaster.intersectObject(plane);
+          offset.copy(intersects[0].point).sub(plane.position);
+        }
+
+      }
+
+      _onMouseMove(event) {
+        event.preventDefault();
+        if (this._pickedObject) {
+            this._raycaster._clickedPosition.x = (event.clientX / window.innerWidth) * 2 - 1;
+            this._raycaster._clickedPosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            this._raycaster.setFromCamera(this._raycaster._clickedPosition, this._camera);
+          const intersects =  this._raycaster.intersectObject(plane);
+          this._pickedObject.position.copy(intersects[0].point.sub(offset));
+        }
+      }
+
+      _onMouseUp(event) {
+        event.preventDefault();
+        this._pickedObject = null;
+      }
+
 
     // 위에서 정의하지 않고 호출만 한 메서드 생성
     _setupControls(){
@@ -141,7 +197,7 @@ class App{
     }
     // render에서 전달받은 time을 사용하여 애니메이션 효과를 만드는 장치
     update(time){
-        time *= 0.001;  // 알아보기 쉽게 ms단위를 초단위로 변경
+        time *= 0.0005;  // 알아보기 쉽게 ms단위를 초단위로 변경
         // // 정육면체 자동 회전 장치
          this._cube.rotation.x = time;
          this._cube.rotation.y = time;
