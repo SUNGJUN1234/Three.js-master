@@ -86,8 +86,8 @@ class App{
 
         // 구 생성
         const radius = 1;           // 구의 반지름
-        const widthSegments = 12;   // 구의 y축 분할
-        const heightSegments = 12;  // 구의 x축 분할
+        const widthSegments = 120;   // 구의 y축 분할
+        const heightSegments = 120;  // 구의 x축 분할
         // 구geometry에 태양에 대한 정보 삽입
         const sphereGeometry = new THREE.SphereGeometry(radius,
             widthSegments, heightSegments);
@@ -152,7 +152,7 @@ class App{
         // this._cube.rotation.y = time;
 
         this._solarSystem.rotation.y = time/2;
-        this._earthOrbit.rotation.y = time;
+        this._earthOrbit.rotation.y = time*2;
     }
 
 }
