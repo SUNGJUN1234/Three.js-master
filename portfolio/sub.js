@@ -1,6 +1,5 @@
 // 오디오 요소 생성
 var audio = new Audio('./data/beat.mp3');
-audio.play();
 
 // 재생 버튼 클릭 시
 document.getElementById('play_button').addEventListener('click', function() {
