@@ -1,17 +1,24 @@
 import * as THREE from '../build/three.module.js';
 import {FBXLoader} from "../examples/jsm/loaders/FBXLoader.js"
 
-let scene_num = 0;
+window.scene_num = 0;
+window.wheelEnabled = false;
 let first_camera_position;
 let move_camera_position;
-let wheelEnabled = true;
+
+
+const divContainer = document.querySelector("#webgl_container");
+const top_div = document.querySelectorAll(".top_div");
+const container1 = document.getElementById("container1");
 class App{
   
-    constructor() {
+     constructor() {
   
 
 
-        const divContainer = document.querySelector("#webgl_container");
+
+
+
         this._divContainer = divContainer;
 
         const renderer = new THREE.WebGLRenderer({antialias:true});
@@ -28,7 +35,7 @@ class App{
         this._setupLight();
         this._setupModel();
         this._setupEventListeners();
-        this._createProgressBar(); // 프로그레스 바 생성
+        this._createprogressbar(); // 프로그레스 바 생성
         this._clock = new THREE.Clock();
 
         window.onresize = this.resize.bind(this);
@@ -103,28 +110,25 @@ class App{
       }, (xhr) => {
         // 로딩 진행 상황 업데이트
         const percent = (xhr.loaded / xhr.total) * 100;
-        this._progressBar.style.width = percent + "%";
+        // this._progressbar.style.width = percent + "%";
+        progress_h1.innerHTML = Math.floor(percent)+"%";
         if(percent == 100){
-          setTimeout(() => {
-       
-            this._progressBar.style.display ="none";
+            
+            setTimeout(() => {
+              this._progressbar.style.opacity ="0";
           }, 2000);
+          setTimeout(() => {
+            this._progressbar.style.display ="none";
+          }, 4000);
 
         }
 
     });;
   }
-  _createProgressBar() {
-    const progressBar = document.createElement("div");
-    progressBar.style.width = "0%";
-    progressBar.style.height = "100%";
-    progressBar.style.backgroundColor = "blue";
-    progressBar.style.position = "fixed";
-    progressBar.style.top = "0";
-    progressBar.style.left = "0";
-    progressBar.style.zIndex = "9999";
-    document.body.appendChild(progressBar);
-    this._progressBar = progressBar;
+  _createprogressbar() {
+
+    document.body.appendChild(progressbar);
+    this._progressbar = progressbar;
 }
 
 
@@ -134,41 +138,57 @@ class App{
         window.addEventListener('wheel', this._handleMouseScroll.bind(this));
     }
     _handleMouseScroll(event) {
-        if (!wheelEnabled) {
+        if (!window.wheelEnabled) {
             return;
           }
-          wheelEnabled = false;
+          window.wheelEnabled = false;
           setTimeout(() => {
-            wheelEnabled = true;
-          }, 1800);
+            window.wheelEnabled = true;
+          }, 2100);
 
         const deltaY = event.deltaY; // 스크롤 이동 값
 
         if (deltaY > 0) {
-          if (scene_num < 4) {
-            ++scene_num;
+          if (window.scene_num < 4) {
+            ++window.scene_num;
           }
         } else {
-          if (scene_num > 0) {
-            --scene_num;
+          if (window.scene_num > 0) {
+            --window.scene_num;
           }
         }
       
-        console.log(scene_num)
+        console.log(window.scene_num)
       
-        if (scene_num == 0) {
+        if (window.scene_num == 0) {
           move_camera_position = { x: 0, y: 88, z: 170 };
-        } else if (scene_num == 1) {
-          move_camera_position = { x: 0, y: 150, z: 50 };
-        }else if (scene_num == 2) {
-            move_camera_position = { x: 0, y: 10, z: 50 };
-        }else if (scene_num == 3) {
+          top_div.forEach((div)=>{
+            div.style.opacity = 0;
+          })
+        } else if (window.scene_num == 1) {
+          move_camera_position = { x:-30, y: 150, z: 70 };
+          top_div.forEach((div)=>{
+            div.style.opacity = 0;
+          })
+          container1.style.opacity = 1;
+        }else if (window.scene_num == 2) {
+            move_camera_position = { x: 30, y: 10, z: 70 };
+            top_div.forEach((div)=>{
+              div.style.opacity = 0;
+            })
+        }else if (window.scene_num == 3) {
             move_camera_position = { x: 0, y: 88, z: 800 };
-        }else if (scene_num == 4) {
-            move_camera_position = { x: 0, y: 70, z: 50 };
+            top_div.forEach((div)=>{
+              div.style.opacity = 0;
+            })
+        }else if (window.scene_num == 4) {
+            move_camera_position = { x: 0, y: 80, z: 50 };
+            top_div.forEach((div)=>{
+              div.style.opacity = 0;
+            })
         }
       
-        let duration = 1700; // 애니메이션 지속 시간 (밀리초)
+        let duration = 2000; // 애니메이션 지속 시간 (밀리초)
         const startTime = performance.now(); // 시작 시간
 
         // 애니메이션 프레임 함수
@@ -178,7 +198,7 @@ class App{
       
           // 현재 위치에서 목표 위치까지 일정한 간격으로 이동
           this._camera.position.copy(
-            first_camera_position.clone().lerp(move_camera_position, progress/10)
+            first_camera_position.clone().lerp(move_camera_position, progress/5)
           );
       
           // 애니메이션 종료 조건
@@ -237,10 +257,10 @@ class App{
         const width = this._divContainer.clientWidth;
         const height = this._divContainer.clientHeight;
 
-        if (this._cleanUp) {
-            this._cleanUp();
-            this._cleanUp = null;
-        }
+        // if (this._cleanUp) {
+        //     this._cleanUp();
+        //     this._cleanUp = null;
+        // }
 
         this._camera.aspect = width / height;
         this._camera.updateProjectionMatrix();
@@ -270,6 +290,9 @@ class App{
 window.onload = function(){
     new App();
 }
+
+
+
 
 
 
