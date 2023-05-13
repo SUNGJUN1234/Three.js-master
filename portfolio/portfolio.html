@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()"/>
     <!-- viewport : web page가 pc의 web browser에서 뿐만아니라 mobile에서도 문제
                     없이 표시 가능하도록 도와준다 -->
     <meta value="viewport" content="width-device-width,inital-scale=1">
@@ -17,10 +18,18 @@
                     모듈버전으로 import하기 위해서 -->
     <!-- defer : 페이지가 모두 로딩된 이후에 자바 스크립트가 실행되도록 하는 장치 -->
     <script type="module" src="portfolio.js" defer></script>
+    <script type="module" src="sub.js" defer></script>
     
     <title>GIS Developer's Three.js Tutorials</title>
 </head>
 <body>
-    <div id="webgl-container"></div>
+    <div id="webgl_container"></div>
+    <div id="text_container">
+
+        <!-- <button id="play_button">▶</button>
+        <button id="pause_button" style="font-weight: 900;">∥</button>
+        <button id="stop_button">■</button> -->
+
+    </div>
 </body>
 </html>

@@ -8,11 +8,23 @@ body{
     overflow: hidden;
 }
 
-#webgl-container{
+#webgl_container{
     /* 해당 div를 화면에 꽉차게 설정 */
     position: absolute;
     top:0;
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 0;
 }
+
+#text_container{
+        /* 해당 div를 화면에 꽉차게 설정 */
+        position: absolute;
+        top:0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+}
+
