@@ -10,6 +10,10 @@ let move_camera_position;
 const divContainer = document.querySelector("#webgl_container");
 const top_div = document.querySelectorAll(".top_div");
 const container1 = document.getElementById("container1");
+const container2 = document.getElementById("container2");
+const container3_1 = document.getElementById("container3_1");
+const container3_2 = document.getElementById("container3_2");
+const container4 = document.getElementById("container4");
 class App{
   
      constructor() {
@@ -171,21 +175,26 @@ class App{
             div.style.opacity = 0;
           })
           container1.style.opacity = 1;
+          
         }else if (window.scene_num == 2) {
             move_camera_position = { x: 30, y: 10, z: 70 };
             top_div.forEach((div)=>{
               div.style.opacity = 0;
             })
+            container2.style.opacity = 1;
         }else if (window.scene_num == 3) {
             move_camera_position = { x: 0, y: 88, z: 800 };
             top_div.forEach((div)=>{
               div.style.opacity = 0;
             })
+            container3_1.style.opacity = 1;
+            container3_2.style.opacity = 1;
         }else if (window.scene_num == 4) {
             move_camera_position = { x: 0, y: 80, z: 50 };
             top_div.forEach((div)=>{
               div.style.opacity = 0;
             })
+            container4.style.opacity = 1;
         }
       
         let duration = 2000; // 애니메이션 지속 시간 (밀리초)

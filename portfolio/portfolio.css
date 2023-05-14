@@ -1,12 +1,12 @@
 @font-face {
-    font-family: 'DOSPilgiMedium';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/DOSPilgiMedium.woff2') format('woff2');
+    font-family: 'NanumSquareNeo-Variable';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 
 *{
-    font-family: 'DOSPilgiMedium';
+    font-family: 'NanumSquareNeo-Variable';
     outline :none;
     margin : 0;
 }
@@ -50,6 +50,7 @@ body{
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 1;
 }
 
 #start_button_div button{
@@ -86,11 +87,12 @@ body{
 
 .top_div{
     position: fixed;
-    background-color: rgb(167, 167, 167);
+    background-color: rgb(255, 255, 255);
     padding: 30px;
-    border-radius: 10px;
-    border: 10px groove rgb(125, 0, 0);
-    transition: opacity 2s ease;
+    border-radius: 0px;
+    border: 20px groove rgb(125, 0, 0);
+    transition: opacity 1s ease;
+    z-index: 0;
 }
 
 #container1{
@@ -102,10 +104,50 @@ body{
     align-items: center;
     opacity: 0;
 }
+
 #container1 div{
     margin-top: 20px;
     font-weight: 900;
     width: 100%;
     display: flex;
     justify-content: space-between;
+}
+
+#container2{
+    bottom: 5%;
+    right: 5%;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+}
+
+#container3_1{
+    top: 5%;
+    left : 5%;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+}
+#container3_2{
+    top: 5%;
+    right: 5%;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+}
+
+#container4{
+    top: 40%;
+    left : calc(50% - 500px);
+    width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
 }

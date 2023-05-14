@@ -31,12 +31,14 @@ const play_button = document.getElementById("play_button");
         if (window.scene_num == 0) {
           
         } else if (window.scene_num == 1) {
-            container1.style.opacity = 1;
+
         }else if (window.scene_num == 2) {
-            
+
         }else if (window.scene_num == 3) {
-            
+          
+          // container3.style.opacity = 1;
         }else if (window.scene_num == 4) {
+          // container4.style.opacity = 1;
             
         }
 
